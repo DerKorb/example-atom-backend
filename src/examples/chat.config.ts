@@ -1,5 +1,8 @@
-import { ProjectConfig, Atom } from '@feinarbyte/atom-module';
-import { AtomConstructor } from '@feinarbyte/atom-module/dist/AtomUtilityTypes';
+import {
+  Atom,
+  ProjectConfig,
+  TransactionContext,
+} from '@feinarbyte/atom-module';
 import { ActiveAtom } from '@feinarbyte/atom-module/dist/decorators/ActiveAtom';
 
 /**
@@ -14,33 +17,41 @@ export enum ChatAtomType {
   Messages = 'Messages',
 }
 
+interface IChatMessages {
+  messages: string[];
+}
+
 /** so lets look at an atom */
 @ActiveAtom({
   relation: ChatRelation.Room,
 })
-export class MessagesAtom extends Atom<ChatAtomType> {
+export class MessagesAtom extends Atom<ChatAtomType> implements IChatMessages {
   public __type = ChatAtomType.Messages;
+  public messages: string[] = [];
 }
-
-/**
- * hopefully deprecateable dictionary of all atoms
- */
-export const chatAtoms: { [key in ChatAtomType]: AtomConstructor } = {
-  [ChatAtomType.Messages]: MessagesAtom,
-};
 
 /**
  * config for your app
  */
 export const ChatConfig: ProjectConfig<ChatAtomType> = {
-  atomIndex: chatAtoms,
+  atomIndex: {
+    [ChatAtomType.Messages]: MessagesAtom,
+  },
   relations: {
     [ChatRelation.Room]: {
       identifier: ChatRelation.Room,
       identifierType: 'string',
       parents: [null],
       pathes: (name: string) => [`/room/${ChatRelation.Room}/${name}`],
-      reducers: [],
+      reducers: [sendMessage],
     },
   },
 };
+
+export async function sendMessage(
+  context: TransactionContext,
+  message: string,
+): Promise<void> {
+  const messages = await context.aquireAtom(MessagesAtom);
+  messages.push(message);
+}
