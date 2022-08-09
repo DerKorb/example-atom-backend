@@ -8,6 +8,7 @@ import {
   TransactionContext,
   useAsContext,
 } from '@feinarbyte/atom-module';
+import { LockServiceToken } from '@feinarbyte/atom-module/dist/tokens/LockServiceToken';
 import { Inject } from '@nestjs/common';
 import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { GraphQLJSON } from 'graphql-type-json';
@@ -16,7 +17,7 @@ import { sendMessage } from 'src/examples/chat.config';
 export class RoomResolver {
   constructor(
     private context: TransactionContext,
-    @Inject(LocksToken) private lockService: LockProvider,
+    @Inject(LockServiceToken) private lockService: LockProvider,
   ) {
     if (!this.context) {
       throw new Error('no context');

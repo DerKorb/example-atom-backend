@@ -7,6 +7,7 @@ import { AtomResolver } from '@feinarbyte/atom-module/dist/atom.resolver';
 import { ApolloDriver } from '@nestjs/apollo';
 import { EventEmitterModule } from '@nestjs/event-emitter/dist/event-emitter.module';
 import { ChatConfig } from './examples/chat.config';
+import { RoomResolver } from './generated/nestjs/Room.resolver';
 
 @Module({
   imports: [
@@ -19,13 +20,13 @@ import { ChatConfig } from './examples/chat.config';
       projectConfig: ChatConfig, // <-- 1. go here
     }),
     GraphQLModule.forRoot({
-      resolvers: [AtomResolver],
+      resolvers: [AtomResolver, RoomResolver],
       driver: ApolloDriver,
       playground: true,
       autoSchemaFile: true,
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, AtomResolver],
+  providers: [AppService, AtomResolver, RoomResolver],
 })
 export class AppModule {}
