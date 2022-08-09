@@ -32,7 +32,7 @@ export class RoomResolver {
     _context: ContextValues<string>,
     @Args({ name: 'message', type: () => String }) message,
   ) {
-    await sendMessage(this.context, message, { test: 'test' });
+    await sendMessage(this.context, message);
 
     return true;
   }
