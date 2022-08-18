@@ -4,6 +4,7 @@
  */
 
 import {
+  ActiveAtom,
   Atom,
   AtomConstructor,
   AtomData,
@@ -23,11 +24,13 @@ export type makeType<label extends string> =
 export type Code = makeType<'code'>;
 
 export enum CollabTreeContext {
-  Code = 'Code',
+  Code = '<Code>',
+  ProjectId = '<ProjectId>',
 }
 
 export enum CollabTreeRelation {
-  Node,
+  Project = 'Project',
+  Node = 'Node',
 }
 
 export enum CollabTreeAtomType {
@@ -90,6 +93,18 @@ export async function createTree(
   }
 }
 
+export async function createProject(
+  context: TransactionContext,
+  projectName: string,
+): Promise<void> {
+  await context.spawnAtom(NodeInfoAtom, {
+    label: projectName,
+  });
+}
+
+@ActiveAtom({
+  relation: CollabTreeRelation.Node,
+})
 export class NodeInfoAtom
   extends Atom<CollabTreeAtomType>
   implements INodeInfo
@@ -98,6 +113,9 @@ export class NodeInfoAtom
   public label: Code;
 }
 
+@ActiveAtom({
+  relation: CollabTreeRelation.Node,
+})
 export class NodeWeightsAtom
   extends Atom<CollabTreeAtomType>
   implements INodeWeights
@@ -111,6 +129,10 @@ export interface ITreeOverview {
   edges: [Code, Code][];
 }
 
+@ActiveAtom({
+  relation: CollabTreeRelation.Project,
+  provideViaAtomResolver: (x) => x,
+})
 export class TreeOverviewAtom
   extends VirtualAtom<CollabTreeAtomType, ITreeOverview>
   implements ITreeOverview
@@ -167,7 +189,16 @@ export const CollabTree: ProjectConfig<
       parents: [null],
       pathes: (name: string) => [`/node/${CollabTreeRelation.Node}/${name}`],
 
-      reducers: [shareNode, createChild],
+      reducers: [],
+    },
+    [CollabTreeRelation.Project]: {
+      identifier: CollabTreeContext.ProjectId,
+      identifierType: 'string',
+      parents: [null],
+      pathes: (name: string) => [
+        `/project/${CollabTreeContext.ProjectId}/${name}`,
+      ],
+      reducers: [createProject],
     },
     [User]: {
       identifier: UserId,
