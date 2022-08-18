@@ -20,8 +20,8 @@ export class ProjectResolver {
         }
     }
 
-    @Transaction()
     @Mutation(() => Boolean)
+    @Transaction()
     public async createProject(
         @setActingUser() @ActingUserPublicId() _publicId: string,
         @useAsContext()

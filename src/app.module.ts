@@ -1,14 +1,12 @@
+import { AtomModule, AtomResolver } from "@feinarbyte/atom-module";
+import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { Module } from "@nestjs/common";
+import { EventEmitterModule } from "@nestjs/event-emitter";
+import { GraphQLModule } from "@nestjs/graphql/dist/graphql.module";
+import { Context } from "graphql-ws";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
-import { AtomModule } from "@feinarbyte/atom-module";
-import { GraphQLModule } from "@nestjs/graphql/dist/graphql.module";
-import { AtomResolver } from "@feinarbyte/atom-module";
-import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
-import { ChatConfig } from "./examples/chat.config";
-import { EventEmitterModule } from "@nestjs/event-emitter";
 import { CollabTree } from "./examples/collabtree.config";
-import { Context } from "graphql-ws";
 import { ProjectResolver } from "./generated/nestjs/Project.resolver";
 
 @Module({
@@ -16,7 +14,11 @@ import { ProjectResolver } from "./generated/nestjs/Project.resolver";
         AtomModule.forRoot({
             projectConfig: CollabTree, // <-- 1. go here
         }),
-        EventEmitterModule.forRoot({ global: true }),
+        EventEmitterModule.forRoot({
+            wildcard: true,
+            delimiter: "/",
+            global: true,
+        }),
         GraphQLModule.forRoot<ApolloDriverConfig>({
             driver: ApolloDriver,
             autoSchemaFile: true,

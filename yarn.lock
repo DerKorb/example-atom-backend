@@ -441,10 +441,10 @@
   dependencies:
     text-decoding "^1.0.0"
 
-"@feinarbyte/atom-module@^0.18.0":
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/@feinarbyte/atom-module/-/atom-module-0.18.0.tgz#15aa783c3c02a4045cc689fc1e9d60fd16bfaa2d"
-  integrity sha512-7eR7PBD2/3Ck0ca4B3+4stHl9RVnZOZQHADww23j4Bjq6dZcxDc3Ea7vuLwQNln/5hQT+RD2Y1R7ww5FYaB74g==
+"@feinarbyte/atom-module@^0.20.1":
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/@feinarbyte/atom-module/-/atom-module-0.20.1.tgz#28ad50c135bc62350eee0635ba106d32638c79e5"
+  integrity sha512-V5G3XzDquTWKpZvKBcdLWbT80sYVQCPjBSk4r45Tu0Y6kgTdVgpYB1y4UtW6uEToCMCy5YVPeTLvtQHyj0aZVw==
   dependencies:
     "@nestjs/common" "^9.0.7"
     "@nestjs/config" "^2.2.0"
