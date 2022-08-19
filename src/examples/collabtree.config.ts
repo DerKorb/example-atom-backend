@@ -4,42 +4,27 @@
  */
 
 import {
-    ActiveAtom,
-    Atom,
-    AtomConstructor,
-    AtomData,
     ProjectConfig,
     SetAtomDataType,
     TransactionContext,
     User,
     UserId,
     UserPublicID,
-    VirtualAtom,
 } from "@feinarbyte/atom-module";
 
+import { find } from "lodash";
+import { CollabTreeAtomType } from "./CollabTreeAtomType";
+import { CollabTreeContext } from "./CollabTreeContext";
+import { CollabTreeRelation } from "./CollabTreeRelation";
+import { createChild } from "./createChild";
+import { createProject } from "./createProject";
+import { ITreeElement } from "./ITreeElement";
+import { NodeInfoAtom } from "./NodeInfoAtom";
+import { NodeWeightsAtom } from "./NodeWeightsAtom";
+import { TreeOverviewAtom } from "./TreeOverviewAtom";
 export type makeType<label extends string> = `${label}_placeholder` | `${label}_placeholder1`;
 
 export type Code = makeType<"code">;
-
-export enum CollabTreeContext {
-    Code = "<Code>",
-    ProjectId = "<ProjectId>",
-}
-
-export enum CollabTreeRelation {
-    Project = "Project",
-    Node = "Node",
-}
-
-export enum CollabTreeAtomType {
-    NodeInfo = "NodeInfo",
-    NodeWeights = "NodeWeights",
-    TreeOverview = "TreeOverview",
-}
-
-export interface INodeInfo {
-    label: Code;
-}
 
 export type INodeWeights = SetAtomDataType<Code, number>;
 
@@ -66,104 +51,7 @@ export async function shareNode(
     // });
 }
 
-export async function createChild(context: TransactionContext, parent: Code, child: Code): Promise<void> {
-    const nodeWeights = await context.aquireAtom(NodeWeightsAtom);
-    nodeWeights.set(child, {
-        [parent]: 1,
-    });
-}
-
-export async function createTree(context: TransactionContext, root: Code, children: Code[]): Promise<void> {
-    const nodeWeights = await context.aquireAtom(NodeWeightsAtom);
-    nodeWeights.set(root, {
-        [root]: 1,
-    });
-    for (const child of children) {
-        createChild(context, root, child);
-    }
-}
-
-export async function createProject(context: TransactionContext, projectName: string): Promise<void> {
-    await context.withOverride(
-        {
-            [CollabTreeContext.ProjectId]: projectName,
-        },
-        async () => {
-            await context.spawnAtom(NodeInfoAtom, { label: projectName }, { [CollabTreeContext.Code]: "root" });
-        },
-    );
-}
-
-@ActiveAtom({
-    relation: CollabTreeRelation.Node,
-    provideViaAtomResolver: (x) => x,
-})
-export class NodeInfoAtom extends Atom<CollabTreeAtomType> implements INodeInfo {
-    public __type = CollabTreeAtomType.NodeInfo;
-
-    public label: Code;
-}
-
-@ActiveAtom({
-    relation: CollabTreeRelation.Node,
-    provideViaAtomResolver: (x) => x,
-})
-export class NodeWeightsAtom extends Atom<CollabTreeAtomType> implements INodeWeights {
-    public __type = CollabTreeAtomType.NodeWeights;
-
-    public entries: { [key in Code]: number };
-}
-
-export interface ITreeOverview {
-    nodes: Code[];
-    edges: [Code, Code][];
-}
-
-@ActiveAtom({
-    relation: CollabTreeRelation.Project,
-    provideViaAtomResolver: (context, stateToMask) => stateToMask,
-})
-export class TreeOverviewAtom extends VirtualAtom<CollabTreeAtomType, ITreeOverview> implements ITreeOverview {
-    protected __provideEmptyValue(): ITreeOverview {
-        return {
-            nodes: [],
-            edges: [],
-        };
-    }
-
-    nodes: Code[];
-
-    edges: [Code, Code][];
-
-    public __type = CollabTreeAtomType.TreeOverview;
-
-    public static dependencies = [{ ctor: NodeWeightsAtom }, { ctor: NodeInfoAtom }];
-
-    public async __onDependencyChange(
-        query: string,
-        newValue: AtomData,
-        ctor: AtomConstructor<Atom<string, AtomData>>,
-    ): Promise<void> {
-        console.log(10);
-        // if (ctor === NodeWeightsAtom) {
-        //     this.nodes = Object.keys(newValue.entries);
-        //     this.edges = [];
-        //     for (const node of this.nodes) {
-        //         for (const child of Object.keys(newValue.entries[node])) {
-        //             this.edges.push([node, child]);
-        //         };
-        //     };
-        // } else if (ctor === NodeInfoAtom) {
-        //     this.nodes = Object.keys(newValue.entries);
-        //     this.edges = [];
-        //     for (const node of this.nodes) {
-        //         for (const child of Object.keys(newValue.entries[node])) {
-        //             this.edges.push([node, child]);
-        //         }
-        //     }
-        // }
-    }
-}
+export type ITreeOverview = ITreeElement;
 
 export const CollabTree: ProjectConfig<CollabTreeAtomType, CollabTreeContext, CollabTreeRelation> = {
     atomIndex: {
@@ -180,7 +68,7 @@ export const CollabTree: ProjectConfig<CollabTreeAtomType, CollabTreeContext, Co
                 `/project/${CollabTreeContext.ProjectId}/node/${CollabTreeContext.Code}/${name}`,
             ],
 
-            reducers: [],
+            reducers: [createChild],
         },
         [CollabTreeRelation.Project]: {
             identifier: CollabTreeContext.ProjectId,

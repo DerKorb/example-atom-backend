@@ -7,6 +7,7 @@ import { Context } from "graphql-ws";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { CollabTree } from "./examples/collabtree.config";
+import { NodeResolver } from "./generated/nestjs/Node.resolver";
 import { ProjectResolver } from "./generated/nestjs/Project.resolver";
 
 @Module({
@@ -59,6 +60,6 @@ import { ProjectResolver } from "./generated/nestjs/Project.resolver";
         }),
     ],
     controllers: [AppController],
-    providers: [AppService, AtomResolver, ProjectResolver],
+    providers: [AppService, AtomResolver, ProjectResolver, NodeResolver],
 })
 export class AppModule {}

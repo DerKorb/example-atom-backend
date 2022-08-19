@@ -441,13 +441,11 @@
   dependencies:
     text-decoding "^1.0.0"
 
-"@feinarbyte/atom-module@^0.20.1":
-  version "0.20.1"
-  resolved "https://registry.yarnpkg.com/@feinarbyte/atom-module/-/atom-module-0.20.1.tgz#28ad50c135bc62350eee0635ba106d32638c79e5"
-  integrity sha512-V5G3XzDquTWKpZvKBcdLWbT80sYVQCPjBSk4r45Tu0Y6kgTdVgpYB1y4UtW6uEToCMCy5YVPeTLvtQHyj0aZVw==
+"@feinarbyte/atom-module@^0.20.2":
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/@feinarbyte/atom-module/-/atom-module-0.20.2.tgz#abb22e3c0bb277d1939d44be7dbafaa453d09f04"
+  integrity sha512-MBY1kyfp4Iv/UmjFTMpk1lI2KBiOnVtOJEwIpH1XfEU29l4IPtuzDXR1D6u8Emoe1vsxS+1QRsSFcUrhpP2HLw==
   dependencies:
-    "@nestjs/common" "^9.0.7"
-    "@nestjs/config" "^2.2.0"
     async-mutex "^0.3.2"
     event-iterator "^2.0.0"
     fast-json-patch "^3.1.1"
@@ -999,15 +997,6 @@
     tslib "2.4.0"
     uuid "8.3.2"
 
-"@nestjs/common@^9.0.7":
-  version "9.0.8"
-  resolved "https://registry.npmjs.org/@nestjs/common/-/common-9.0.8.tgz"
-  integrity sha512-x6+qGRnTEZmg0jzqPUW8uPCK6qPjc7JGmeHszZOso1YCCKNiqaCM4NY6ndbl2Of3kWSpq3qE4thCmuZ/4DwBQA==
-  dependencies:
-    iterare "1.2.1"
-    tslib "2.4.0"
-    uuid "8.3.2"
-
 "@nestjs/config@^2.2.0":
   version "2.2.0"
   resolved "https://registry.npmjs.org/@nestjs/config/-/config-2.2.0.tgz"
@@ -1388,6 +1377,11 @@
   integrity sha512-zm6xBQpFDIDM6o9r6HSgDeIcLy82TKWctCXEPbJJcXb5AKmi5BNNdLXneixK4lplX3PqIVcwLBCGE/kAGnlD4A==
   dependencies:
     "@types/node" "*"
+
+"@types/lodash@^4.14.184":
+  version "4.14.184"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.184.tgz#23f96cd2a21a28e106dc24d825d4aa966de7a9fe"
+  integrity sha512-RoZphVtHbxPZizt4IcILciSWiC6dcn+eZ8oX9IWEYfDMcocdd42f7NPI6fQj+6zI8y4E0L7gu2pcZKLGTRaV9Q==
 
 "@types/long@^4.0.0", "@types/long@^4.0.1":
   version "4.0.2"
